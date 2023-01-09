@@ -1,0 +1,49 @@
+{
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
+  "plugins": ["react", "react-hooks", "@typescript-eslint"],
+  "extends": [
+    "next",
+    "next/core-web-vitals",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:react/recommended",
+    "airbnb",
+    "ts-react-important-stuff",
+    "plugin:import/typescript",
+    "plugin:prettier/recommended",
+    "prettier"
+  ],
+  "rules": {
+    "import/extensions": "off",
+    "react/react-in-jsx-scope": "off",
+    "react/jsx-props-no-spreading": "off",
+    "react/function-component-definition": "off",
+    "react/prop-types": "off",
+    "prettier/prettier": ["error", { "singleQuote": true, "parser": "typescript" }],
+    "react/jsx-filename-extension": [1,
+      {
+        "extensions": [
+          ".tsx"
+        ]
+      }
+    ],
+    "@typescript-eslint/ban-ts-comment": "off",
+    "import/prefer-default-export": "off",
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "no-restricted-exports": "off",
+    "jsx-a11y/anchor-is-valid": "off",
+    "no-shadow": "off",
+    "react/require-default-props": "off",
+    "react/no-unstable-nested-components": "off",
+    "no-console": "off",
+    "jsx-a11y/no-noninteractive-tabindex": "off",
+    "jsx-a11y/label-has-associated-control": "off",
+    "import/no-named-as-default": "off",
+    "@typescript-eslint/no-empty-function": "off",
+    "import/no-cycle": "off",
+    "jsx-a11y/no-noninteractive-element-interactions": "off",
+    "no-underscore-dangle": "off"
+  }
+}
