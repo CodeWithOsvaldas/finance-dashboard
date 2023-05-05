@@ -10,7 +10,12 @@
     "start": "next start"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.2.1",
+    "@fortawesome/free-solid-svg-icons": "^6.2.1",
+    "@fortawesome/react-fontawesome": "^0.2.0",
     "@prisma/client": "^4.8.0",
+    "classnames": "^2.3.2",
+    "daisyui": "^2.46.1",
     "next": "13.1.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
