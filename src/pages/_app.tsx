@@ -1,3 +1,4 @@
+import { UserProvider } from '@auth0/nextjs-auth0/client';
 import { type AppType } from 'next/dist/shared/lib/utils';
 
 import '../styles/globals.css';
@@ -13,9 +14,11 @@ library.add(fas);
 
 const MyApp: AppType = ({ Component, pageProps }) => {
   return (
-    <Layout>
-      <Component {...pageProps} />
-    </Layout>
+    <UserProvider>
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
+    </UserProvider>
   );
 };
 

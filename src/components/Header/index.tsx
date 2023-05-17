@@ -1,8 +1,11 @@
 import React from 'react';
 import { faBank, faChartPie, faCreditCard, faHome } from '@fortawesome/free-solid-svg-icons';
+import { useUser } from '@auth0/nextjs-auth0/client';
 import NavLink from './NavLink';
 
 function Header() {
+  const { user } = useUser();
+
   return (
     <header className="z-40 flex h-16 w-full items-center justify-between">
       <div className="navbar bg-base-100 p-0">
@@ -55,8 +58,25 @@ function Header() {
         <div className="navbar-end">
           <div className="dropdown dropdown-end">
             <label tabIndex={0} className="btn-ghost btn-circle avatar btn">
-              <div />
+              <div className="w-10 rounded-full">
+                {user?.picture && (
+                  <div className="">
+                    <picture>
+                      <img alt="profile" src={user.picture} className="mx-auto h-10 w-10 rounded-full object-cover" />
+                    </picture>
+                  </div>
+                )}
+              </div>
             </label>
+            <ul
+              tabIndex={0}
+              className="dropdown-content menu rounded-box menu-compact mt-3 w-52 bg-base-100 p-2 shadow"
+            >
+              <li>
+                {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+                <a href="/api/auth/logout">Logout</a>
+              </li>
+            </ul>
           </div>
         </div>
       </div>

@@ -1,3 +1,4 @@
+import { withPageAuthRequired } from '@auth0/nextjs-auth0/client';
 import React, { PropsWithChildren } from 'react';
 import Head from 'next/head';
 
@@ -22,4 +23,4 @@ function Layout({ children }: PropsWithChildren) {
   );
 }
 
-export default Layout;
+export default withPageAuthRequired(Layout);
