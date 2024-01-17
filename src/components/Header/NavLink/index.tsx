@@ -8,18 +8,27 @@ interface NavLinkProps {
   name: string;
   href: string;
   icon: IconProp;
-  bottomBorder?: boolean;
 }
 
-const NavLink = ({ name, href, icon, bottomBorder = true }: NavLinkProps) => {
+const NavLink = ({ name, href, icon }: NavLinkProps) => {
   const router = useRouter();
-  const borderClass = bottomBorder ? 'border-b-4' : 'border-l-4';
+  const isRouteActive = router.pathname === href;
+
   return (
-    <Link href={href} className={cx('!rounded-none', { [`${borderClass} border-primary`]: router.pathname === href })}>
-      <span className="text-left">
-        <FontAwesomeIcon icon={icon} />
+    <Link
+      href={href}
+      className={cx(
+        'm-3 p-4 hover:border-b-2 hover:border-primary',
+        { 'border-b-2 border-primary text-foreground': isRouteActive },
+        { 'text-muted-foreground': !isRouteActive }
+      )}
+    >
+      <span className="text-sm font-medium transition-colors hover:text-primary">
+        <span className="mx-2">
+          <FontAwesomeIcon icon={icon} />
+        </span>
+        {name}
       </span>
-      <span className="mx-2 text-sm font-normal">{name}</span>
     </Link>
   );
 };
