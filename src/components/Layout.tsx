@@ -1,13 +1,13 @@
+import { ThemeProvider } from '@/components/ThemeProvider';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0/client';
 import React, { PropsWithChildren } from 'react';
 import Head from 'next/head';
-import { ThemeProvider } from '@/components/ThemeProvider';
 
 import Header from './Header';
 
 function Layout({ children }: PropsWithChildren) {
   return (
-    <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
+    <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
       <Head>
         <title>Finance Dashboard</title>
         <link rel="icon" href="/favicon.ico" />

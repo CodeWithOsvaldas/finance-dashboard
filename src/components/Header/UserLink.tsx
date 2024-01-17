@@ -55,12 +55,11 @@ function UserLink() {
               {isDarkTheme ? <Sun className="h-[1.2rem] w-[1.2rem]" /> : <Moon className="h-[1.2rem] w-[1.2rem]" />}
             </DropdownMenuShortcut>
           </DropdownMenuItem>
+          <DropdownMenuItem>
+            {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+            <a href="/api/auth/logout">Log out</a>
+          </DropdownMenuItem>
         </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
-          <a href="/api/auth/logout">Log out</a>
-        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
