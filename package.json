@@ -6,7 +6,7 @@
     "build": "next build",
     "dev": "next dev",
     "postinstall": "prisma generate",
-    "lint": "next lint",
+    "lint": "next lint --fix",
     "start": "next start"
   },
   "prisma": {
@@ -26,6 +26,7 @@
     "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-toast": "^1.1.5",
     "@tanstack/react-query": "^5.17.19",
+    "@tanstack/react-table": "^8.12.0",
     "axios": "^1.6.5",
     "big.js": "^6.2.1",
     "class-variance-authority": "^0.7.0",

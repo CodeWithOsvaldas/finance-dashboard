@@ -1,13 +1,14 @@
 import { Button } from '@/components/ui/button';
 import CurrencyInput from '@/components/ui/CurrencyInput';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { createBankAccount } from '@/services/bankAccount.service';
+import { createBankAccount, updateBankAccount } from '@/services/bankAccount.service';
 import { useToast } from '@/components/ui/use-toast';
+import { queryKeys } from '@/services/queryKey.factory';
 import { BankAccount, CreateBankAccountDto } from '@/types/BankAccount.types';
 import { convertCurrencyToNumber, isAmountWithinRange, MAX_VALUE } from '@/utils/numberUtils';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Loader2 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -31,9 +32,15 @@ const formSchema = z.object({
     ),
 });
 
-const BankAccountForm = () => {
-  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+interface BankAccountFormProps {
+  isOpen: boolean;
+  onOpenChange: (value: boolean) => void;
+  bankAccount: BankAccount | null;
+}
+
+const BankAccountForm = ({ isOpen, onOpenChange, bankAccount }: BankAccountFormProps) => {
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -43,44 +50,85 @@ const BankAccountForm = () => {
     mode: 'onChange',
   });
 
+  const onCreateSuccess = async (newBankAccount: BankAccount) => {
+    await queryClient.setQueryData(queryKeys.fetchBankAccounts.all, (oldData?: BankAccount[]) => {
+      if (oldData) {
+        return [newBankAccount, ...oldData];
+      }
+      return [newBankAccount];
+    });
+    toast({
+      description: 'Bank Account was added successfully.',
+    });
+    onOpenChange(false);
+  };
+
+  const onUpdateSuccess = async (updatedBankAccount: BankAccount) => {
+    await queryClient.setQueryData(queryKeys.fetchBankAccounts.all, (oldData?: BankAccount[]) => {
+      if (oldData) {
+        return oldData.map((bankAccount) =>
+          bankAccount.id === updatedBankAccount.id ? updatedBankAccount : bankAccount
+        );
+      }
+      return [updatedBankAccount];
+    });
+    toast({
+      description: 'Bank Account was updated successfully.',
+    });
+    onOpenChange(false);
+  };
+
+  const onRequestError = () => {
+    toast({
+      variant: 'destructive',
+      title: 'Uh oh! Something went wrong.',
+      description: 'There was a problem with your request.',
+    });
+  };
+
   const createMutation = useMutation({
     mutationFn: createBankAccount,
-    onSuccess: (newBankAccount: BankAccount) => {
-      // ?
-      toast({
-        description: 'Bank Account was added successfully.',
-      });
-      setIsDialogOpen(false);
-    },
-    onError: () => {
-      toast({
-        variant: 'destructive',
-        title: 'Uh oh! Something went wrong.',
-        description: 'There was a problem with your request.',
-      });
-    },
+    onSuccess: onCreateSuccess,
+    onError: onRequestError,
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: ({ id, ...dto }: CreateBankAccountDto & { id: number }) => updateBankAccount(id, dto),
+    onSuccess: onUpdateSuccess,
+    onError: onRequestError,
   });
 
   useEffect(() => {
-    form.reset();
-  }, [isDialogOpen]);
+    if (bankAccount) {
+      form.reset({
+        accountNumber: bankAccount.accountNumber,
+        balance: bankAccount.balance.toString(),
+      });
+    } else {
+      form.reset();
+    }
+  }, [isOpen, bankAccount]);
 
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = (values: z.infer<typeof formSchema>) => {
     const createDto: CreateBankAccountDto = {
       accountNumber: values.accountNumber,
       balance: convertCurrencyToNumber(values.balance),
     };
-    createMutation.mutate(createDto);
+    if (!bankAccount) {
+      createMutation.mutate(createDto);
+    } else {
+      updateMutation.mutate({ ...createDto, id: bankAccount.id });
+    }
   };
 
   return (
-    <Dialog open={isDialogOpen} onOpenChange={(open) => setIsDialogOpen(open)}>
+    <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
         <Button size="sm">Add</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Create new bank account</DialogTitle>
+          <DialogTitle>{bankAccount ? 'Update the bank account' : 'Create new bank account'}</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form className="space-y-4">

@@ -18,3 +18,38 @@ export const create = async (bankAccount: CreateBankAccountDto, userId: string) 
   });
   return transformBankAccount(createdBankAccount);
 };
+
+export const getAll = async (userId: string) => {
+  const bankAccounts = await prisma.bankAccount.findMany({
+    where: {
+      userId,
+    },
+    orderBy: {
+      id: 'desc',
+    },
+  });
+
+  return bankAccounts.map((bankAccount) => transformBankAccount(bankAccount));
+};
+
+export const deleteById = (id: number, userId: string) => {
+  return prisma.bankAccount.delete({
+    where: {
+      id,
+      userId,
+    },
+  });
+};
+
+export const update = async (id: number, bankAccount: CreateBankAccountDto) => {
+  const updateBankAccount = await prisma.bankAccount.update({
+    data: {
+      ...bankAccount,
+      balance: toCents(bankAccount.balance),
+    },
+    where: {
+      id,
+    },
+  });
+  return transformBankAccount(updateBankAccount);
+};

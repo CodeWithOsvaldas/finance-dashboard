@@ -12,6 +12,7 @@ const CurrencyInput = ({ value, onValueChange }: CurrencyInputProps) => {
       allowDecimals
       decimalSeparator=","
       groupSeparator=" "
+      prefix="$"
       decimalsLimit={2}
       maxLength={15}
     />
